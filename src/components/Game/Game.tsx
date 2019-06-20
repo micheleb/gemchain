@@ -1,21 +1,20 @@
 import React from "react";
-import { Col, Row } from "react-bootstrap";
 import "./Game.css";
 
-const cols = Array(12).fill("");
-const rows = Array(20).fill("");
+const cols = Array(6).fill("");
+const rows = Array(13).fill("");
 
 const Game = () => {
   const getCol = (r: number, c: number) => (
-    <Col key={`${r}-${c}`} md={1} className="Cell">
+    <span key={`${r}-${c}`} className="Cell">
       &nbsp;
-    </Col>
+    </span>
   );
 
   const getRow = (r: number) => (
-    <Row key={`row-${r}`} className="no-gutters">
+    <div key={`row-${r}`} className="Row">
       {cols.map((_, c) => getCol(r, c))}
-    </Row>
+    </div>
   );
 
   return <div className="Game">{rows.map((_, r) => getRow(r))}</div>;

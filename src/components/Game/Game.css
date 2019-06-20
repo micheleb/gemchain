@@ -1,7 +1,16 @@
 .Game {
   border: 1px solid #ddd;
+  width: 402px;
+  display: flex;
+  flex-direction: column;
+}
+
+.Row {
+  display: flex;
 }
 
 .Cell {
   border: 1px solid #333;
+  height: 67px;
+  width: 67px;
 }

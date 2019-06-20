@@ -1,6 +1,6 @@
 import React from "react";
 import { Col, Row } from "react-bootstrap";
-import Game from "../Game";
+import Game from "../Game/Game";
 import "./App.css";
 
 const App: React.FC = () => (
@@ -14,7 +14,7 @@ const App: React.FC = () => (
       </Col>
     </Row>
     <Row>
-      <Col md={12}>
+      <Col md={{ span: 10, offset: 1 }} className="GameContainer">
         <Game />
       </Col>
     </Row>
