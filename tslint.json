@@ -1,0 +1,13 @@
+{
+  "extends": ["tslint:latest", "tslint-react"],
+  "rules": {
+    "quotemark": [
+      true,
+      "double",
+      "jsx-double",
+      "avoid-escape",
+      "avoid-template"
+    ],
+    "interface-over-type-literal": false
+  }
+}
