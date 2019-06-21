@@ -18,7 +18,12 @@ const App: React.FC = () => {
     setSelectedCol(e.currentTarget.value as string);
 
   const addGem = () =>
-    gameRef.current!.addGem({ color: selectedColor, row: 0, col: parseInt(selectedCol, 10) });
+    gameRef.current!.addGem({
+      col: parseInt(selectedCol, 10),
+      color: selectedColor,
+      moving: true,
+      row: 0,
+    });
 
   return (
     <div className="App">

@@ -15,6 +15,24 @@
   width: 67px;
 }
 
+.blinking {
+  -webkit-animation: blink 250ms infinite; /* Safari 4+ */
+  -moz-animation: blink 250ms infinite; /* Fx 5+ */
+  -o-animation: blink 250ms infinite; /* Opera 12+ */
+  animation: blink 250ms infinite; /* IE 10+, Fx 29+ */
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+  50%,
+  100% {
+    background-color: initial;
+  }
+}
+
 .bg-red {
   background-color: red;
 }

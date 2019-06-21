@@ -8,6 +8,7 @@
     "@types/react": "16.8.21",
     "@types/react-dom": "16.8.4",
     "bootstrap": "^4.3.1",
+    "classnames": "^2.2.6",
     "react": "^16.8.6",
     "react-bootstrap": "^1.0.0-beta.9",
     "react-dom": "^16.8.6",
@@ -37,6 +38,7 @@
     ]
   },
   "devDependencies": {
+    "@types/classnames": "^2.2.8",
     "tslint-react": "^4.0.0"
   }
 }

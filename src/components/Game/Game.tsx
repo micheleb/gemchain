@@ -1,3 +1,4 @@
+import classnames from "classnames";
 import React, { forwardRef, useImperativeHandle, useState } from "react";
 import { useInterval } from "../../effects";
 import "./Game.css";
@@ -15,6 +16,7 @@ export const cols = Array.from(Array(COL_COUNT), (_, i) => i);
 type CellProps = {
   row: number;
   col: number;
+  moving?: boolean;
   color?: string;
   owner?: string;
   blinking?: boolean;
@@ -35,11 +37,32 @@ for (const r of rows) {
 }
 
 const Cell = React.memo((props: CellProps) => (
-  <span className={`Cell ${(props.color && `bg-${props.color}`) || ""}`}>&nbsp;</span>
+  <span
+    className={classnames("Cell", {
+      [`bg-${props.color}`]: props.color !== undefined,
+      blinking: props.blinking,
+    })}
+  >
+    &nbsp;
+  </span>
 ));
 
 export type GameRef = {
   addGem: (newGem: CellProps) => any;
+};
+
+enum NeighbourDirection {
+  W,
+  SW,
+  S,
+  SE,
+}
+
+const neighbourKey: { [dir in NeighbourDirection]: (c: CellProps) => string } = {
+  [NeighbourDirection.W]: (c) => cellId(c.row, c.col + 1),
+  [NeighbourDirection.SW]: (c) => cellId(c.row - 1, c.col + 1),
+  [NeighbourDirection.S]: (c) => cellId(c.row - 1, c.col),
+  [NeighbourDirection.SE]: (c) => cellId(c.row - 1, c.col - 1),
 };
 
 const Game = (props: {}, ref: React.Ref<any>) => {
@@ -51,7 +74,30 @@ const Game = (props: {}, ref: React.Ref<any>) => {
     },
   }));
 
-  useInterval(() => {
+  const resetTraversal = () =>
+    Object.values(cells).forEach((c) => {
+      c.touched = false;
+    });
+
+  const resetMoving = () =>
+    Object.values(cells).forEach((c) => {
+      c.moving = false;
+    });
+
+  const cleanupStep = () => {
+    const blinking = Object.values(cells).filter((c) => c.blinking);
+
+    if (blinking) {
+      blinking.forEach((c) => {
+        c.blinking = false;
+        c.color = undefined;
+      });
+    }
+
+    return blinking.length;
+  };
+
+  const gravityStep = () => {
     for (const r of rows) {
       for (const c of cols) {
         const cell = cells[cellId(r, c)];
@@ -61,15 +107,82 @@ const Game = (props: {}, ref: React.Ref<any>) => {
           cell.color = undefined;
           cellBelow.color = color;
           cellBelow.touched = true;
+          cellBelow.moving = true;
+        }
+      }
+    }
+    resetTraversal();
+  };
+
+  const checkConnected = (
+    cell: CellProps,
+    othersInPath: CellProps[],
+    allPaths: CellProps[][],
+    dir?: NeighbourDirection
+  ) => {
+    const { color } = cell;
+
+    cell.touched = true;
+    const updatedPath = [...othersInPath, cell];
+
+    const checkDirections =
+      dir !== undefined
+        ? [dir]
+        : [
+            NeighbourDirection.W,
+            NeighbourDirection.SW,
+            NeighbourDirection.S,
+            NeighbourDirection.SE,
+          ];
+
+    checkDirections.forEach((d) => {
+      const k = neighbourKey[d](cell);
+      const c = cells[k];
+      if (c && !c.moving && c.color === color && !c.touched) {
+        checkConnected(c, [...updatedPath], allPaths, d);
+      } else if (updatedPath.length >= 3) {
+        allPaths.push([...updatedPath]);
+      } else {
+        cell.touched = false;
+      }
+    });
+  };
+
+  const check3orMore = () => {
+    const allPaths: CellProps[][] = [];
+
+    for (let r = ROW_COUNT - 1; r >= 0; r--) {
+      for (const c of cols) {
+        const cell = cells[cellId(r, c)];
+        if (cell && cell.color && !cell.touched) {
+          checkConnected(cell, [], allPaths);
         }
       }
     }
 
-    Object.values(cells).forEach((c) => {
-      c.touched = false;
-    });
+    const matches = allPaths.filter((p) => p.length >= 3);
 
-    setCells({ ...cells });
+    if (matches.length) {
+      // tslint:disable-next-line:no-console
+      matches.forEach((p) =>
+        p.forEach((c) => {
+          c.blinking = true;
+        })
+      );
+    }
+
+    resetTraversal();
+  };
+
+  useInterval(() => {
+    if (cleanupStep()) {
+      // skip this round
+    } else {
+      gravityStep();
+      check3orMore();
+      resetMoving();
+      setCells({ ...cells });
+    }
   }, REFRESH_TIME_MILLIS);
 
   const getRow = (r: number) => (
