@@ -121,8 +121,11 @@ const Game = (props: {}, ref: React.Ref<any>) => {
     dir?: NeighbourDirection
   ) => {
     const { color } = cell;
+    if (cell.moving) {
+      // wait for next round
+      return;
+    }
 
-    cell.touched = true;
     const updatedPath = [...othersInPath, cell];
 
     const checkDirections =
@@ -138,7 +141,7 @@ const Game = (props: {}, ref: React.Ref<any>) => {
     checkDirections.forEach((d) => {
       const k = neighbourKey[d](cell);
       const c = cells[k];
-      if (c && !c.moving && c.color === color && !c.touched) {
+      if (c && !c.moving && c.color === color) {
         checkConnected(c, [...updatedPath], allPaths, d);
       } else if (updatedPath.length >= 3) {
         allPaths.push([...updatedPath]);
@@ -154,7 +157,7 @@ const Game = (props: {}, ref: React.Ref<any>) => {
     for (let r = ROW_COUNT - 1; r >= 0; r--) {
       for (const c of cols) {
         const cell = cells[cellId(r, c)];
-        if (cell && cell.color && !cell.touched) {
+        if (cell && cell.color) {
           checkConnected(cell, [], allPaths);
         }
       }
