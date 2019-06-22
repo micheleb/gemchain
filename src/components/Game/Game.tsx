@@ -141,12 +141,10 @@ const Game = (props: {}, ref: React.Ref<any>) => {
     checkDirections.forEach((d) => {
       const k = neighbourKey[d](cell);
       const c = cells[k];
-      if (c && !c.moving && c.color === color) {
+      if (c && !c.moving && c.color === color && !c.touched) {
         checkConnected(c, [...updatedPath], allPaths, d);
       } else if (updatedPath.length >= 3) {
         allPaths.push([...updatedPath]);
-      } else {
-        cell.touched = false;
       }
     });
   };
