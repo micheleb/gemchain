@@ -25,30 +25,34 @@
 @keyframes blink {
   0%,
   49% {
-    background-color: rgba(255, 255, 255, 0.9);
+    opacity: 0;
   }
   50%,
   100% {
-    background-color: initial;
+    opacity: 1;
   }
 }
 
-.bg-red {
-  background-color: red;
+.bg-deepblue {
+  background: url("/deepblue.png") 50% / cover no-repeat;
 }
 
 .bg-blue {
-  background-color: blue;
+  background: url("/blue.png") 50% / cover no-repeat;
 }
 
 .bg-green {
-  background-color: green;
+  background: url("/green.png") 50% / cover no-repeat;
 }
 
 .bg-yellow {
-  background-color: yellow;
+  background: url("/yellow.png") 50% / cover no-repeat;
+}
+
+.bg-orange {
+  background: url("/orange.png") 50% / cover no-repeat;
 }
 
 .bg-purple {
-  background-color: purple;
+  background: url("/purple.png") 50% / cover no-repeat;
 }

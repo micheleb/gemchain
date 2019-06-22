@@ -3,7 +3,7 @@ import { Button, Col, Form, FormControlProps, Row } from "react-bootstrap";
 import Game, { cols, GameRef } from "../Game/Game";
 import "./App.css";
 
-const colors = ["red", "blue", "green", "yellow", "purple"];
+const colors = ["blue", "green", "deepblue", "orange", "purple", "yellow"];
 
 const App: React.FC = () => {
   const gameRef = useRef<GameRef>({ addGem: () => null });

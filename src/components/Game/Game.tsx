@@ -142,6 +142,8 @@ const Game = (props: {}, ref: React.Ref<any>) => {
         checkConnected(c, [...updatedPath], allPaths, d);
       } else if (updatedPath.length >= 3) {
         allPaths.push([...updatedPath]);
+      } else {
+        cell.touched = false;
       }
     });
   };
