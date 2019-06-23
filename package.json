@@ -38,6 +38,7 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/react": "^8.0.1",
     "@types/classnames": "^2.2.8",
     "tslint-react": "^4.0.0"
   }

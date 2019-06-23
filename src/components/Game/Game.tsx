@@ -4,10 +4,11 @@ import { useInterval } from "../../effects";
 import "./Game.css";
 
 // as in some other rather similar game
-const ROW_COUNT = 13;
-const COL_COUNT = 6;
+export const ROW_COUNT = 13;
+export const COL_COUNT = 6;
 
 const REFRESH_TIME_MILLIS = 500;
+const SPEED_UP_TIME_MILLIS = 60;
 
 // only used to keep track of indices, never filled with anything else
 const rows = Array.from(Array(ROW_COUNT), (_, i) => i);
@@ -36,6 +37,11 @@ for (const r of rows) {
   }
 }
 
+// used to quickly setup a scenario when debugging
+const setCell = (row: number, col: number, color: string) => {
+  cellsProps[`${row}-${col}`] = { row, col, color };
+};
+
 const Cell = React.memo((props: CellProps) => (
   <span
     className={classnames("Cell", {
@@ -49,6 +55,10 @@ const Cell = React.memo((props: CellProps) => (
 
 export type GameRef = {
   addGem: (newGem: CellProps) => any;
+};
+
+export type GameProps = {
+  initialScenario?: CellProps[];
 };
 
 enum NeighbourDirection {
@@ -65,8 +75,12 @@ const neighbourKey: { [dir in NeighbourDirection]: (c: CellProps) => string } = 
   [NeighbourDirection.SE]: (c) => cellId(c.row - 1, c.col - 1),
 };
 
-const Game = (props: {}, ref: React.Ref<any>) => {
+export const Game = (props: GameProps, ref: React.Ref<any>) => {
+  if (props.initialScenario) {
+    props.initialScenario.forEach((p) => setCell(p.row, p.col, p.color!));
+  }
   const [cells, setCells] = useState(cellsProps);
+  const [gemsDisappeared, setGemsDisappeared] = useState(false);
 
   useImperativeHandle(ref, () => ({
     addGem(newGem: CellProps) {
@@ -98,7 +112,7 @@ const Game = (props: {}, ref: React.Ref<any>) => {
   };
 
   const gravityStep = () => {
-    for (const r of rows) {
+    for (let r = ROW_COUNT - 1; r >= 0; r--) {
       for (const c of cols) {
         const cell = cells[cellId(r, c)];
         const { row, col, color, touched } = cell;
@@ -175,16 +189,29 @@ const Game = (props: {}, ref: React.Ref<any>) => {
     resetTraversal();
   };
 
-  useInterval(() => {
-    if (cleanupStep()) {
-      // skip this round
-    } else {
-      gravityStep();
-      check3orMore();
-      resetMoving();
-      setCells({ ...cells });
-    }
-  }, REFRESH_TIME_MILLIS);
+  useInterval(
+    () => {
+      if (gemsDisappeared) {
+        gravityStep();
+        resetTraversal();
+        if (!Object.values(cells).filter((c) => c.moving).length) {
+          setGemsDisappeared(false);
+        }
+        resetMoving();
+        setCells({ ...cells });
+      } else {
+        if (cleanupStep()) {
+          setGemsDisappeared(true);
+        } else {
+          gravityStep();
+          check3orMore();
+          resetMoving();
+          setCells({ ...cells });
+        }
+      }
+    },
+    gemsDisappeared ? SPEED_UP_TIME_MILLIS : REFRESH_TIME_MILLIS
+  );
 
   const getRow = (r: number) => (
     <div key={`row-${r}`} className="Row">
@@ -194,7 +221,11 @@ const Game = (props: {}, ref: React.Ref<any>) => {
     </div>
   );
 
-  return <div className="Game">{rows.map((_, r) => getRow(r))}</div>;
+  return (
+    <div className="Game" data-testid="Game">
+      {rows.map((_, r) => getRow(r))}
+    </div>
+  );
 };
 
-export default forwardRef<GameRef, {}>(Game);
+export default forwardRef<GameRef, GameProps>(Game);

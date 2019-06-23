@@ -1,11 +1,14 @@
 import React, { useRef, useState } from "react";
 import { Button, Col, Form, FormControlProps, Row } from "react-bootstrap";
-import Game, { cols, GameRef } from "../Game/Game";
+import Game, { cols, GameProps, GameRef } from "../Game/Game";
 import "./App.css";
 
 const colors = ["blue", "green", "deepblue", "orange", "purple", "yellow"];
 
-const App: React.FC = () => {
+// we're using GameProps here because of testing: passing the ref to <Game>
+// is no easy task (we'd need to mock useRef() somehow), so for now keep it
+// this way. Props are only used while testing <Game>.
+const App = (props: GameProps) => {
   const gameRef = useRef<GameRef>({ addGem: () => null });
 
   const [selectedColor, setSelectedColor] = useState(colors[0]);
@@ -37,7 +40,7 @@ const App: React.FC = () => {
       </Row>
       <Row>
         <Col md={{ span: 6, offset: 3 }} className="GameContainer">
-          <Game ref={gameRef} />
+          <Game ref={gameRef} initialScenario={props.initialScenario} />
         </Col>
         <Col md={2}>
           <Form>
