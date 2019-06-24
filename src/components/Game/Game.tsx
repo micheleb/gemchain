@@ -8,7 +8,7 @@ export const ROW_COUNT = 13;
 export const COL_COUNT = 6;
 
 const REFRESH_TIME_MILLIS = 500;
-const SPEED_UP_TIME_MILLIS = 60;
+const SPEED_UP_TIME_MILLIS = 40;
 
 // only used to keep track of indices, never filled with anything else
 const rows = Array.from(Array(ROW_COUNT), (_, i) => i);
@@ -21,7 +21,6 @@ type CellProps = {
   color?: string;
   owner?: string;
   blinking?: boolean;
-  touched?: boolean;
 };
 
 type Cells = { [cellId: string]: CellProps };
@@ -62,17 +61,17 @@ export type GameProps = {
 };
 
 enum NeighbourDirection {
-  W,
-  SW,
-  S,
-  SE,
+  E,
+  NE,
+  N,
+  NW,
 }
 
 const neighbourKey: { [dir in NeighbourDirection]: (c: CellProps) => string } = {
-  [NeighbourDirection.W]: (c) => cellId(c.row, c.col + 1),
-  [NeighbourDirection.SW]: (c) => cellId(c.row - 1, c.col + 1),
-  [NeighbourDirection.S]: (c) => cellId(c.row - 1, c.col),
-  [NeighbourDirection.SE]: (c) => cellId(c.row - 1, c.col - 1),
+  [NeighbourDirection.E]: (c) => cellId(c.row, c.col + 1),
+  [NeighbourDirection.NE]: (c) => cellId(c.row - 1, c.col + 1),
+  [NeighbourDirection.N]: (c) => cellId(c.row - 1, c.col),
+  [NeighbourDirection.NW]: (c) => cellId(c.row - 1, c.col - 1),
 };
 
 export const Game = (props: GameProps, ref: React.Ref<any>) => {
@@ -80,7 +79,7 @@ export const Game = (props: GameProps, ref: React.Ref<any>) => {
     props.initialScenario.forEach((p) => setCell(p.row, p.col, p.color!));
   }
   const [cells, setCells] = useState(cellsProps);
-  const [gemsDisappeared, setGemsDisappeared] = useState(false);
+  const [speedGravityUp, setSpeedGravityUp] = useState(false);
 
   useImperativeHandle(ref, () => ({
     addGem(newGem: CellProps) {
@@ -88,17 +87,12 @@ export const Game = (props: GameProps, ref: React.Ref<any>) => {
     },
   }));
 
-  const resetTraversal = () =>
-    Object.values(cells).forEach((c) => {
-      c.touched = false;
-    });
-
   const resetMoving = () =>
     Object.values(cells).forEach((c) => {
       c.moving = false;
     });
 
-  const cleanupStep = () => {
+  const destroyGems = () => {
     const blinking = Object.values(cells).filter((c) => c.blinking);
 
     if (blinking) {
@@ -115,17 +109,15 @@ export const Game = (props: GameProps, ref: React.Ref<any>) => {
     for (let r = ROW_COUNT - 1; r >= 0; r--) {
       for (const c of cols) {
         const cell = cells[cellId(r, c)];
-        const { row, col, color, touched } = cell;
+        const { row, col, color } = cell;
         const cellBelow = cells[cellId(row + 1, col)];
-        if (color && !touched && cellBelow && !cellBelow.color) {
+        if (color && cellBelow && !cellBelow.color) {
           cell.color = undefined;
           cellBelow.color = color;
-          cellBelow.touched = true;
           cellBelow.moving = true;
         }
       }
     }
-    resetTraversal();
   };
 
   const checkConnected = (
@@ -146,16 +138,16 @@ export const Game = (props: GameProps, ref: React.Ref<any>) => {
       dir !== undefined
         ? [dir]
         : [
-            NeighbourDirection.W,
-            NeighbourDirection.SW,
-            NeighbourDirection.S,
-            NeighbourDirection.SE,
+            NeighbourDirection.E,
+            NeighbourDirection.NE,
+            NeighbourDirection.N,
+            NeighbourDirection.NW,
           ];
 
     checkDirections.forEach((d) => {
       const k = neighbourKey[d](cell);
       const c = cells[k];
-      if (c && !c.moving && c.color === color && !c.touched) {
+      if (c && !c.moving && c.color === color) {
         checkConnected(c, [...updatedPath], allPaths, d);
       } else if (updatedPath.length >= 3) {
         allPaths.push([...updatedPath]);
@@ -185,23 +177,20 @@ export const Game = (props: GameProps, ref: React.Ref<any>) => {
         })
       );
     }
-
-    resetTraversal();
   };
 
   useInterval(
     () => {
-      if (gemsDisappeared) {
+      if (speedGravityUp) {
         gravityStep();
-        resetTraversal();
         if (!Object.values(cells).filter((c) => c.moving).length) {
-          setGemsDisappeared(false);
+          setSpeedGravityUp(false);
         }
         resetMoving();
         setCells({ ...cells });
       } else {
-        if (cleanupStep()) {
-          setGemsDisappeared(true);
+        if (destroyGems()) {
+          setSpeedGravityUp(true);
         } else {
           gravityStep();
           check3orMore();
@@ -210,7 +199,7 @@ export const Game = (props: GameProps, ref: React.Ref<any>) => {
         }
       }
     },
-    gemsDisappeared ? SPEED_UP_TIME_MILLIS : REFRESH_TIME_MILLIS
+    speedGravityUp ? SPEED_UP_TIME_MILLIS : REFRESH_TIME_MILLIS
   );
 
   const getRow = (r: number) => (
