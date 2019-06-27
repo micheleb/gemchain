@@ -1,3 +1,18 @@
+# What this is
+
+A game that might remind you of some early 90s game.
+
+# How to run
+
+We suggest using [yarn](https://yarnpkg.com/en/), but `npm` is ok, too (sort of).
+
+To launch the game:
+
+    yarn install
+    yarn start
+
+# Default Create React App stuff
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
