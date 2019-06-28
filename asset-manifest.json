@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/gemchain/static/css/main.222877fa.chunk.css",
+    "main.js": "/gemchain/static/js/main.ebcc9ab2.chunk.js",
+    "main.js.map": "/gemchain/static/js/main.ebcc9ab2.chunk.js.map",
+    "runtime~main.js": "/gemchain/static/js/runtime~main.3ce32519.js",
+    "runtime~main.js.map": "/gemchain/static/js/runtime~main.3ce32519.js.map",
+    "static/js/2.195357f4.chunk.js": "/gemchain/static/js/2.195357f4.chunk.js",
+    "static/js/2.195357f4.chunk.js.map": "/gemchain/static/js/2.195357f4.chunk.js.map",
+    "index.html": "/gemchain/index.html",
+    "precache-manifest.e0f63868940e69282d84657427c8eb31.js": "/gemchain/precache-manifest.e0f63868940e69282d84657427c8eb31.js",
+    "service-worker.js": "/gemchain/service-worker.js",
+    "static/css/main.222877fa.chunk.css.map": "/gemchain/static/css/main.222877fa.chunk.css.map"
+  }
+}
