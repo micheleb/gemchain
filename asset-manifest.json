@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/gemchain/static/css/main.222877fa.chunk.css",
+    "main.css": "/gemchain/static/css/main.d4f1e00f.chunk.css",
     "main.js": "/gemchain/static/js/main.ebcc9ab2.chunk.js",
     "main.js.map": "/gemchain/static/js/main.ebcc9ab2.chunk.js.map",
     "runtime~main.js": "/gemchain/static/js/runtime~main.3ce32519.js",
@@ -8,8 +8,9 @@
     "static/js/2.195357f4.chunk.js": "/gemchain/static/js/2.195357f4.chunk.js",
     "static/js/2.195357f4.chunk.js.map": "/gemchain/static/js/2.195357f4.chunk.js.map",
     "index.html": "/gemchain/index.html",
-    "precache-manifest.e0f63868940e69282d84657427c8eb31.js": "/gemchain/precache-manifest.e0f63868940e69282d84657427c8eb31.js",
+    "precache-manifest.a97850bedeb87f4a0e38afd5b97c47ed.js": "/gemchain/precache-manifest.a97850bedeb87f4a0e38afd5b97c47ed.js",
     "service-worker.js": "/gemchain/service-worker.js",
-    "static/css/main.222877fa.chunk.css.map": "/gemchain/static/css/main.222877fa.chunk.css.map"
+    "static/css/main.d4f1e00f.chunk.css.map": "/gemchain/static/css/main.d4f1e00f.chunk.css.map",
+    "static/media/Game.css": "/gemchain/static/media/blue.6f8c0073.png"
   }
 }
