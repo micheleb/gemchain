@@ -34,25 +34,25 @@
 }
 
 .bg-deepblue {
-  background: url("/deepblue.png") 50% / cover no-repeat;
+  background: url("../../assets/deepblue.png") 50% / cover no-repeat;
 }
 
 .bg-blue {
-  background: url("/blue.png") 50% / cover no-repeat;
+  background: url("../../assets/blue.png") 50% / cover no-repeat;
 }
 
 .bg-green {
-  background: url("/green.png") 50% / cover no-repeat;
+  background: url("../../assets/green.png") 50% / cover no-repeat;
 }
 
 .bg-yellow {
-  background: url("/yellow.png") 50% / cover no-repeat;
+  background: url("../../assets/yellow.png") 50% / cover no-repeat;
 }
 
 .bg-orange {
-  background: url("/orange.png") 50% / cover no-repeat;
+  background: url("../../assets/orange.png") 50% / cover no-repeat;
 }
 
 .bg-purple {
-  background: url("/purple.png") 50% / cover no-repeat;
+  background: url("../../assets/purple.png") 50% / cover no-repeat;
 }
